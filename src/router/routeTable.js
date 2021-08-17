@@ -1,5 +1,7 @@
+const Docker = require('dockerode')
 const { config } = require('PRConfig')
 
+const docker = new Docker()
 
 class RouteTable {
 

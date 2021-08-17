@@ -26,7 +26,7 @@ module.exports = {
     example: 'vab build',
     // Merge the default task options with these custom task options
     mergeOptions: true,
-    description : 'Builds vab docker image',
+    description : 'Builds taps docker image',
     options: {
     }
   }

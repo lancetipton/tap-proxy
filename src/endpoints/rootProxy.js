@@ -1,3 +1,4 @@
+const proxy = require('proxy-middleware')
 const { AppRouter } = require('PRRouter')
 const { RouteTable } = require('PRRouteTable')
 

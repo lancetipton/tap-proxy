@@ -1,4 +1,5 @@
 module.exports = {
-  ...require('./errorLogger'),
+  ...require('./errorListener'),
+  ...require('./logger'),
   ...require('./setupCors'),
 }
