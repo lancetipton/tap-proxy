@@ -1,0 +1,29 @@
+sync:
+  keg-proxy:
+    alpha: "/keg/tap"
+    beta: "docker://tap/keg/tap"
+    mode: "one-way-replica"
+    mergeDefault: false
+    ignore:
+      vcs: true
+      paths:
+        - "node_modules"
+        - "/.*"
+        - "!/.npmrc"
+        - "*.lock"
+        - "*.md"
+        - "/temp"
+        - "/build"
+        - "/docs"
+actions:
+  tap:
+    dev:
+      location: /keg/tap
+      privileged: true
+      cmds:
+        - yarn dev
+    start:
+      location: /keg/tap
+      privileged: true
+      cmds:
+        - yarn start

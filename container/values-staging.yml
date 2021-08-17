@@ -1,0 +1,2 @@
+env:
+  KEG_PROXY_HOST: staging.keghub.io

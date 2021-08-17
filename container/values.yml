@@ -1,0 +1,58 @@
+# Not currently setup, but will be at some point
+# Using settings would allow separating keg-cli settings from ENV values
+settings: 
+  # Turn off adding an injected compose config for keg-proxy
+  injectedCompose: false
+  # Turn off auto-building the keg-base image
+  autoBuildBase: false
+  # Turn off auto-creating a keg-proxy sync in develop environments
+  autoSync: false
+  # Toggle merging the default mutagen sync config with the taps config
+  useSyncDefault: false
+  # Ensures watchtower won't restart the container when a new image is found (default is true)
+  watchTowerEnabled: false
+
+env:
+  # --- LOCAL ENV CONTEXT --- #
+  IMAGE: 'keg-proxy'
+
+  # --- LOCAL ENV CONTEXT --- #
+  KEG_CONTEXT_PATH: "{{ cli.taps.proxy.path }}"
+
+  # Turn off adding an injected compose config for keg-proxy
+  KEG_NO_INJECTED_COMPOSE: true
+
+  # Turn off auto-building the keg-base image
+  KEG_FROM_BASE: false
+
+  # Turn off auto-creating a keg-proxy sync
+  KEG_AUTO_SYNC: false
+
+  # Ensures watchtower won't restart the container when a new image is found (default is true)
+  KEG_WATCHTOWER_ENABLED: false
+
+  # --- PROXY ENV CONTEXT --- #
+
+  KEG_DOCKER_FILE: "{{ cli.taps.proxy.path }}/container/Dockerfile"
+  KEG_VALUES_FILE: "{{ cli.taps.proxy.path }}/container/values.yml"
+  KEG_MUTAGEN_FILE: "{{ cli.taps.proxy.path }}/container/mutagen.yml"
+  KEG_COMPOSE_DEFAULT: "{{ cli.taps.proxy.path }}/container/docker-compose.yml"
+
+  # Default location of the tap in the docker container
+  DOC_APP_PATH: /keg/tap
+
+  # Default host for the keg proxy
+  KEG_PROXY_HOST: local.keghub.io
+
+  # Default docker network
+  KEG_DOCKER_NETWORK: keg-hub-net
+
+  # Proxy port testing to be exposed by docker
+  PROXY_INSECURE_PORT: 80
+  PROXY_SECURE_PORT: 443
+  PROXY_DASHBOARD_PORT: 18001
+  PROXY_HEALTHCHECK_PORT: 8080
+
+  # Must be one of debug, panic, fatal, error, warn, info
+  PROXY_LOG_LEVEL: error
+
