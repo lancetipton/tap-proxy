@@ -1,0 +1,43 @@
+{
+  "name": "tap-proxy",
+  "version": "0.0.0",
+  "description": "Simple proxy for taps running under subdomains",
+  "main": "index.js",
+  "author": "Lance Tipton",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "clean": "cd node_modules/keg-core; yarn clean",
+    "clean:install": "yarn clean:nm; yarn install",
+    "clean:full": "yarn clean; yarn clean:nm; yarn install",
+    "clean:nm": "rimraf ./yarn.lock; rimraf ./package.lock; rimraf node_modules",
+    "dev": "yarn proxy",
+    "format": "yarn pretty",
+    "pretty": "./node_modules/.bin/prettier --config ./configs/prettier.config.js --write '**/*.{js,jsx}'",
+    "proxy": "nodemon --watch ./src --watch ./configs --exec 'node ./index.js'",
+    "postinstall": "node scripts/postinstall.js",
+    "setup": "yarn install --ignore-engines",
+    "start": "yarn proxy",
+    "task": "node ./tasks/runTask.js"
+  },
+  "dependencies": {
+    "@keg-hub/cli-utils": "0.2.2",
+    "@keg-hub/jsutils": "8.6.0",
+    "@keg-hub/parse-config": "0.0.3",
+    "dockerode": "^2.2.10",
+    "proxy-middleware": "^0.15.0",
+    "app-root-path": "3.0.0",
+    "body-parser": "1.10.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "module-alias": "2.2.2",
+    "nodemon": "2.0.4",
+    "npm-run-all": "4.1.5"
+  },
+  "devDependencies": {
+    "jest": "26.4.2",
+    "jest-html-reporter": "3.3.0",
+    "prettier": "^2.2.1",
+    "rimraf": "3.0.2"
+  }
+}
