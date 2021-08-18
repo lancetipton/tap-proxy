@@ -1,7 +1,11 @@
-const rootProxy = require('./root')
+const rootProxy = require('./rootProxy')
+const status = require('./status')
 
-
-
-module.exports = (...args) => {
+const setupEndpoints = (...args) => {
+  status(...args)
   rootProxy(...args)
+}
+
+module.exports = {
+  setupEndpoints
 }

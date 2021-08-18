@@ -11,6 +11,7 @@ const aliases = deepFreeze({
   PRConfigs: path.join(rootDir, 'configs'),
   PRUtils: path.join(rootDir, 'src/utils'),
   PRRouter: path.join(rootDir, 'src/router/router.js'),
+  PREndpoints: path.join(rootDir, 'src/endpoints'),
   PRConfig: path.join(rootDir, 'configs/proxy.config.js'),
   PRRouteTable: path.join(rootDir, 'src/router/routeTable.js'),
 })
