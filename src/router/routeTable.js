@@ -1,7 +1,9 @@
 const Docker = require('dockerode')
 const { config } = require('PRConfig')
-const { limbo } = require('@keg-hub/jsutils')
+const { Logger } = require('@keg-hub/cli-utils')
+const { limbo, get } = require('@keg-hub/jsutils')
 const docker = new Docker()
+
 
 /**
  * Wraps a method with a callback into a promise
@@ -20,6 +22,50 @@ const limboify = (cb, ...args) => {
   )
 }
 
+const resolveName = (containerObj, config) => {
+  const name = get(containerObj, `Names.0`, '').substring(1)
+    
+  // TODO - Check for prefixes, img and package, then remove them if needed
+  // Need to add labels to proxy config
+  return name
+    .replace(/^package-/, '')
+    .replace(/^img-/, '')
+}
+
+const resolvePort = async (containerObj, config) => {
+  // Check the container ENVs
+  const container = docker.getContainer(containerObj.Id)
+  const [insErr, inspectObj] = await limboify(container.inspect.bind(container))
+  if(insErr) return console.error(insErr)
+
+  // TODO - Convert KEG_PROXY_PORT to config value
+
+  const envPort = get(inspectObj, `Config.Env.KEG_PROXY_PORT`)
+  if(envPort) return envPort
+
+  // Check the container labels
+  const labelsObj = get(containerObj, `Labels`, {})
+  // TODO - Convert com.keg.env.port to config value
+  const labelPort = labelsObj['com.keg.env.port']
+  if(labelPort) return labelPort
+
+  // Check the ports object
+  const privatePort = get(containerObj, `Ports.0.PrivatePort`)
+  if(privatePort) return privatePort
+
+}
+
+const resolveIP = (containerObj, config) => {
+  const networkName = get(containerObj, 'HostConfig.NetworkMode', '')
+  const network = networkName && get(containerObj, `NetworkSettings.Networks.${networkName}`, {})
+  const ip = network && network.IPAddress
+
+  // TODO: figure out if we can just use the containers ID
+  // Docker does some internal setup with DNS, and each containers host file
+  // We maybe able to use this, and make container look up easier
+  return ip
+}
+
 /**
  * Builds an route entry from the passed in container object
  * @function
@@ -29,16 +75,10 @@ const limboify = (cb, ...args) => {
  * @returns {Promise<route>} - Route object with port, name, and address properties
  */
 const buildRoute = async containerObj => {
-  // TODO: update to parse out the subdomain and prot
-  const name = containerObj.Names[0].substring(1)
-  const port = containerObj.Ports[0].PrivatePort
-  
-  const container = docker.getContainer(containerObj.Id)
-  const [inspErr, inspectObj] = await limboify(container.inspect)
-  
-  // TODO: update to parse out the correct ip address
-  const address = inspectObj.NetworkSettings.IPAddress
-  
+  const name = resolveName(containerObj)
+  const address = resolveIP(containerObj)
+  const port = await resolvePort(containerObj)
+
   return {
     port: port,
     name: name,
@@ -73,8 +113,8 @@ class RouteTable {
    *
    * @returns {Object} - All found routes built from running containers
    */
-  getRoutes = () => {
-    return this.routes
+  getRoute = name => {
+    return this.routes[name]
   }
 
   /**
@@ -85,59 +125,27 @@ class RouteTable {
    * @returns {void}
    */
   updateRoutes = async () => {
-    console.log(`---------- update routes ----------`)
-    // const containers = await limboify(docker.listContainers)
-    // const promiseRoutes = containers.reduce(async (toResolve, containerObj) => {
-    //   const routes = await toResolve
+    const [contErr, containers] = await limboify(docker.listContainers.bind(docker))
 
-    //   const route = await buildRoute(containerObj)
-    //   const current = this.routes[route.name]
+    const promiseRoutes = containers.reduce(async (toResolve, containerObj) => {
+      const routes = await toResolve
 
-    //   typeof current === 'undefined'
-    //     ? Logger.pair(`[RouteTable] Adding container route:`, route.name)
-    //     : (current.address !== route.address || current.port !== route.port)
-    //         && Logger.pair('[RouteTable] Updating container route:', route.name)
+      if(!containerObj) return routes
 
-    //   routes[name] = {
-    //     ...current,
-    //     name: name,
-    //     address: address,
-    //     port: port
-    //   }
+      const route = await buildRoute(containerObj)
+      const current = this.routes[route.name]
 
-    //   return routes
-    // }, Promise.resolve({}))
+      typeof current === 'undefined'
+        ? Logger.pair(`[RouteTable] Adding container route:`, route.name)
+        : (current.address !== route.address || current.port !== route.port)
+            && Logger.pair('[RouteTable] Updating container route:', route.name)
+
+      routes[route.name] = { ...current, ...route }
+
+      return routes
+    }, Promise.resolve({}))
     
-    // this.routes = await promiseRoutes 
-  }
-
-  __updateRoutes = () => {
-    docker.listContainers((err, containers) => {
-      containers.forEach((containerInfo) => {
-        // TODO: update to parse out the subdomain and prot
-        const name = containerInfo.Names[0].substring(1)
-        const port = containerInfo.Ports[0].PrivatePort
-        
-        const container = docker.getContainer(containerInfo.Id)
-        container.inspect((err, data)=> {
-          // TODO: update to parse out the correct ip address
-          const address = data.NetworkSettings.IPAddress
-
-          ;(typeof this.routes[name] === 'undefined') &&
-            Logger.info('Adding new route:', name)
-          
-          ;(this.routes[name].address !== address || this.routes[name].port !== port) &&
-            Logger.info('Updating route:', name)
-
-          this.routes[name] = {
-            name: name,
-            address: address,
-            port: port
-          }
-
-        })
-      })
-    })
+    this.routes = await promiseRoutes
   }
 
 }

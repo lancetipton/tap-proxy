@@ -16,6 +16,7 @@ const initProxy = async () => {
   setupCors(app)
   setupRouter(app)
   errorListener(app)
+  setupEndpoints(app, config)
 
   app.listen(config.port, () => {
     Logger.pair('Proxy Server running on ' + config.port)

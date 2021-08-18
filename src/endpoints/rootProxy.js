@@ -1,3 +1,4 @@
+const url = require('url')
 const proxy = require('proxy-middleware')
 const { AppRouter } = require('PRRouter')
 const { RouteTable } = require('PRRouteTable')
@@ -22,8 +23,8 @@ const rootProxy = (app, config) => (req, res, next) => {
   try {
 
     const destination = req.hostname.split('.')[0]
-    const subdomain = RouteTable[destination]
-    
+    const subdomain = RouteTable.getRoute(destination)
+
     return subdomain
       ? respondProxy(req, res, next, subdomain, config)
       : respond404(res)
