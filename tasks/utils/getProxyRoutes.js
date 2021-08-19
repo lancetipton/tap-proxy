@@ -3,12 +3,12 @@ const { limbo, isArr, get } = require('@keg-hub/jsutils')
 const { error, getKegGlobalConfig } = require('@keg-hub/cli-utils')
 
 /**
- * Gets a list of all containers registered to the keg-proxy
- * @param {string} env - The env the keg-proxy was started in
+ * Gets a list of all containers registered to the keg-node-proxy
+ * @param {string} env - The env the keg-node-proxy was started in
  * @param {string} host - Domain when the proxy is running
  * @param {Object} [globalConfig] - Keg-Cli globalConfig
  *
- * @returns {Array} - List of container routes from keg-proxy
+ * @returns {Array} - List of container routes from keg-node-proxy
  */
 const getProxyRoutes = async (env, host, globalConfig) => {
   globalConfig = globalConfig || getKegGlobalConfig()

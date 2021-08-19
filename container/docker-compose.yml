@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  keg-proxy:
+  keg-node-proxy:
     environment:
       - DOC_APP_PATH
       - DOC_BUILD_PATH

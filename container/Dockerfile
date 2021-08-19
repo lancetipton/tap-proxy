@@ -2,7 +2,7 @@
 # Add a FROM for the tap-base image to we can copy content from it
 ARG KEG_NODE_VERSION
 ARG KEG_NODE_IMAGE=node:$KEG_NODE_VERSION
-FROM $KEG_NODE_IMAGE as keg-proxy
+FROM $KEG_NODE_IMAGE as keg-node-proxy
 
 # Ensure the app path is set within the FROM scope
 ARG DOC_APP_PATH

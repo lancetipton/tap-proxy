@@ -27,7 +27,7 @@ const askForRoute = async items => {
 }
 
 /**
- * Lists all containers registered to the keg-proxy
+ * Lists all containers registered to the keg-node-proxy
  * @param {Object} args - arguments passed from the runTask method
  * @param {string} args.command - Initial command being run
  * @param {Array} args.options - arguments passed from the command line

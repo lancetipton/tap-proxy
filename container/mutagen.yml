@@ -1,5 +1,5 @@
 sync:
-  keg-proxy:
+  keg-node-proxy:
     alpha: "/keg/tap"
     beta: "docker://tap/keg/tap"
     mode: "one-way-replica"

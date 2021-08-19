@@ -1,5 +1,5 @@
 {
-  "name": "keg-proxy",
+  "name": "keg-node-proxy",
   "version": "0.0.0",
   "description": "Simple proxy for taps running under subdomains",
   "main": "index.js",

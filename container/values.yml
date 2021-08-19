@@ -1,11 +1,11 @@
 # Not currently setup, but will be at some point
 # Using settings would allow separating keg-cli settings from ENV values
 settings: 
-  # Turn off adding an injected compose config for keg-proxy
+  # Turn off adding an injected compose config for keg-node-proxy
   injectedCompose: false
   # Turn off auto-building the keg-base image
   autoBuildBase: false
-  # Turn off auto-creating a keg-proxy sync in develop environments
+  # Turn off auto-creating a keg-node-proxy sync in develop environments
   autoSync: false
   # Toggle merging the default mutagen sync config with the taps config
   useSyncDefault: false
@@ -14,18 +14,18 @@ settings:
 
 env:
   # --- LOCAL ENV CONTEXT --- #
-  IMAGE: 'keg-proxy'
+  IMAGE: 'keg-node-proxy'
 
   # --- LOCAL ENV CONTEXT --- #
   KEG_CONTEXT_PATH: "{{ cli.taps.proxy.path }}"
 
-  # Turn off adding an injected compose config for keg-proxy
+  # Turn off adding an injected compose config for keg-node-proxy
   KEG_NO_INJECTED_COMPOSE: true
 
   # Turn off auto-building the keg-base image
   KEG_FROM_BASE: false
 
-  # Turn off auto-creating a keg-proxy sync
+  # Turn off auto-creating a keg-node-proxy sync
   KEG_AUTO_SYNC: false
 
   # Ensures watchtower won't restart the container when a new image is found (default is true)
