@@ -1,15 +1,14 @@
 const { config } = require('PRConfig')
 const { Logger } = require('PRUtils/logger')
 const {
+  resolveIP,
   buildRoute,
   formatName,
-  getContainers,
-  isValidRoute,
-  resolveIP,
+  resolveName,
   resolvePort,
-  resolveName
+  isValidRoute,
+  getContainers,
 } = require('./helpers')
-
 
 /**
  * RouteTable
@@ -98,8 +97,6 @@ class RouteTable {
 }
 
 const RT = new RouteTable(config)
-
-// setInterval(RT.updateRoutes.bind(RT), RT.config.updateInterval)
 
 module.exports = {
   RouteTable: RT

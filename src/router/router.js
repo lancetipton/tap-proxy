@@ -1,4 +1,5 @@
 const express = require('express')
+const { getApp } = require('PRApp')
 const bodyParser = require('body-parser')
 const { Logger, logRequest } = require('PRUtils/logger')
 
@@ -15,7 +16,9 @@ const AppRouter = express.Router()
  * @public
  *
  */
-const setupRouter = app => {
+const setupRouter = () => {
+  const app = getApp()
+
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use((req, res, next) => {

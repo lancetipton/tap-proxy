@@ -1,3 +1,4 @@
+const { getApp } = require('PRApp')
 const { config } = require('PRConfig')
 
 /**
@@ -8,8 +9,8 @@ const { config } = require('PRConfig')
  *
  * @returns {void}
  */
-const setupCors = app => {
-  if(!app) return
+const setupCors = () => {
+  const app = getApp()
 
   const allowedOrigins = !config.origins
     ? ['*']

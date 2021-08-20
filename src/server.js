@@ -1,25 +1,34 @@
 const url = require('url')
 const http = require('http')
-const express = require('express')
+const { getApp } = require('PRApp')
 const { config } = require('PRConfig')
 const { setupRouter } = require('PRRouter')
-const { setupEndpoints } = require('PREndpoints')
 const { Logger } = require('PRUtils/logger')
+const { setupEndpoints } = require('PREndpoints')
 const { setupCors } = require('PRUtils/setupCors')
 const { errorListener } = require('PRUtils/errorListener')
 
-const app = express()
-
+/**
+ * Initializes the Keg-Proxy Server and starts listening on the port defined in the config
+ * @function
+ *
+ * @returns {Void}
+ */
 const initProxy = async () => {
-  const app = express()
+  const app = getApp()
 
-  setupCors(app)
-  setupRouter(app)
-  errorListener(app)
+  setupCors()
+  setupRouter()
+  errorListener()
   setupEndpoints(app, config)
 
-  app.listen(config.port, () => {
-    Logger.pair('[Keg-Proxy] Server running on port: ', config.port)
+  const server = app.listen(app.locals.config.port, () => {
+    Logger.pair('[Keg-Proxy] Server running on port: ', app.locals.config.port)
+  })
+
+  process.on('SIGTERM', () => {
+    Logger.info('[Keg-Proxy] Shutting down server...')
+    server.close(() => Logger.info('[Keg-Proxy] server shutdown'))
   })
 
 }

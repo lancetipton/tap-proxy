@@ -7,6 +7,7 @@ const rootDir = path.join(__dirname, '../')
 // aliases shared by jest and module-alias
 const aliases = deepFreeze({
   PRSrc: path.join(rootDir, 'src'),
+  PRApp: path.join(rootDir, 'src/app'),
   PRTasks: path.join(rootDir, 'tasks'),
   PRConfigs: path.join(rootDir, 'configs'),
   PRUtils: path.join(rootDir, 'src/utils'),
