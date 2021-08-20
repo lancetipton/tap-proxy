@@ -19,7 +19,7 @@ const initProxy = async () => {
   setupEndpoints(app, config)
 
   app.listen(config.port, () => {
-    Logger.pair('Proxy Server running on ' + config.port)
+    Logger.pair('[Keg-Proxy] Server running on port: ', config.port)
   })
 
 }

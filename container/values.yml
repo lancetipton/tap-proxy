@@ -13,7 +13,9 @@ settings:
   watchTowerEnabled: false
   # Disable auto starting the keg-proxy
   useKegProxy: false
-  
+  # Disable calling docker exec on the container after it's started
+  useAutoExec: false
+
 env:
   # --- LOCAL ENV CONTEXT --- #
   IMAGE: 'keg-node-proxy'
@@ -25,6 +27,9 @@ env:
   KEG_NO_INJECTED_COMPOSE: true
   # Turn off auto-creating a keg-node-proxy sync
   # KEG_AUTO_SYNC: false
+
+  # Turn off the auto docker exec command after the container is started
+  KEG_AUTO_DOCKER_EXEC: false
 
   # Turn off auto-building the keg-base image
   KEG_FROM_BASE: false
@@ -55,15 +60,10 @@ env:
 
   # Default host for the keg proxy
   KEG_PROXY_HOST: local.keghub.io
+  KEG_PROXY_SERVER_PORT: 80
 
   # Default docker network
   KEG_DOCKER_NETWORK: keg-hub-net
-
-  # Proxy port testing to be exposed by docker
-  PROXY_INSECURE_PORT: 80
-  PROXY_SECURE_PORT: 443
-  PROXY_DASHBOARD_PORT: 18001
-  PROXY_HEALTHCHECK_PORT: 8080
 
   # Must be one of debug, panic, fatal, error, warn, info
   PROXY_LOG_LEVEL: error
