@@ -2,41 +2,53 @@
 # Using settings would allow separating keg-cli settings from ENV values
 settings: 
   # Turn off adding an injected compose config for keg-node-proxy
-  injectedCompose: false
+  injectedCompose: true
   # Turn off auto-building the keg-base image
   autoBuildBase: false
   # Turn off auto-creating a keg-node-proxy sync in develop environments
-  autoSync: false
+  autoSync: true
   # Toggle merging the default mutagen sync config with the taps config
   useSyncDefault: false
   # Ensures watchtower won't restart the container when a new image is found (default is true)
   watchTowerEnabled: false
-
+  # Disable auto starting the keg-proxy
+  useKegProxy: false
+  
 env:
   # --- LOCAL ENV CONTEXT --- #
   IMAGE: 'keg-node-proxy'
 
   # --- LOCAL ENV CONTEXT --- #
-  KEG_CONTEXT_PATH: "{{ cli.taps.proxy.path }}"
+  KEG_CONTEXT_PATH: "{{ cli.taps.kpy.path }}"
 
   # Turn off adding an injected compose config for keg-node-proxy
   KEG_NO_INJECTED_COMPOSE: true
+  # Turn off auto-creating a keg-node-proxy sync
+  # KEG_AUTO_SYNC: false
 
   # Turn off auto-building the keg-base image
   KEG_FROM_BASE: false
 
-  # Turn off auto-creating a keg-node-proxy sync
-  KEG_AUTO_SYNC: false
+  # Command to run when the container starts
+  KEG_EXEC_CMD: start
+
+  KEG_NODE_IMAGE: node:14.7-alpine
+  
+  # Set the default image from, even when not being used
+  KEG_IMAGE_FROM: ghcr.io/simpleviewinc/keg-node-proxy:develop
+
+  # Turn off using the keg-proxy
+  KEG_USE_PROXY: false
 
   # Ensures watchtower won't restart the container when a new image is found (default is true)
   KEG_WATCHTOWER_ENABLED: false
 
   # --- PROXY ENV CONTEXT --- #
 
-  KEG_DOCKER_FILE: "{{ cli.taps.proxy.path }}/container/Dockerfile"
-  KEG_VALUES_FILE: "{{ cli.taps.proxy.path }}/container/values.yml"
-  KEG_MUTAGEN_FILE: "{{ cli.taps.proxy.path }}/container/mutagen.yml"
-  KEG_COMPOSE_DEFAULT: "{{ cli.taps.proxy.path }}/container/docker-compose.yml"
+  KEG_DOCKER_FILE: "{{ cli.taps.kpy.path }}/container/Dockerfile"
+  KEG_VALUES_FILE: "{{ cli.taps.kpy.path }}/container/values.yml"
+  KEG_MUTAGEN_FILE: "{{ cli.taps.kpy.path }}/container/mutagen.yml"
+  KEG_COMPOSE_DEFAULT: "{{ cli.taps.kpy.path }}/container/docker-compose.yml"
 
   # Default location of the tap in the docker container
   DOC_APP_PATH: /keg/tap

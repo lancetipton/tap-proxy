@@ -1,7 +1,5 @@
-
-# Add a FROM for the tap-base image to we can copy content from it
-ARG KEG_NODE_VERSION
-ARG KEG_NODE_IMAGE=node:$KEG_NODE_VERSION
+# Add a FROM for the proxy image to we can copy content from it
+ARG KEG_NODE_IMAGE=node:14.7-alpine
 FROM $KEG_NODE_IMAGE as keg-node-proxy
 
 # Ensure the app path is set within the FROM scope
@@ -17,9 +15,11 @@ RUN apk add git bash; \
     sysctl -p; \
     rm -rf /var/cache/apk/*; \
     /bin/sed -i '1s|.*|root:x:0:0:root:/root:/bin/bash|g' /etc/passwd; \
-    yarn global add nodemon --pure-lockfile; \
-    cd $DOC_APP_PATH; \
-    yarn install --pure-lockfile; \
+    yarn global add nodemon --pure-lockfile
+
+COPY . .
+
+RUN yarn install --pure-lockfile; \
     yarn cache clean
 
 # Proxy ports exposed by docker
