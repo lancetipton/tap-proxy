@@ -20,10 +20,11 @@ const getProxyRoutes = async (env, host, globalConfig) => {
 
   const routes = err
     ? error.throwError(err.message)
-    : !isArr(res.data)
-      ? error.throwError(`No routes returned from the proxy server!`, res.data)
-      : res.data
-      
+    : isArr(res.data)
+      ? res.data
+      : error.throwError(`No routes returned from the proxy server!`) ||
+          (res && console.log(res.data))
+
   return routes.map(route => ({
     ...formatRoute(route, env, host, globalConfig),
     ...route,
