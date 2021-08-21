@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  keg-node-proxy:
+  keg-proxy:
     image: ${KEG_IMAGE_FROM}
-    container_name: keg-node-proxy
+    container_name: keg-proxy
     tty: true
     stdin_open: true
     networks:

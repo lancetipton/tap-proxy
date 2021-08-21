@@ -1,0 +1,5 @@
+
+env:
+  KEG_PROXY_HOST: develop.keghub.io
+  KEG_AUTO_SYNC: false
+  

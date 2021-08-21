@@ -1,6 +1,6 @@
 # Add a FROM for the proxy image to we can copy content from it
 ARG KEG_NODE_IMAGE=node:14.7-alpine
-FROM $KEG_NODE_IMAGE as keg-node-proxy
+FROM $KEG_NODE_IMAGE as keg-proxy
 
 # Ensure the app path is set within the FROM scope
 ARG DOC_APP_PATH=/keg/tap

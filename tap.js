@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'keg-node-proxy',
+  name: 'keg-proxy',
   displayName: 'Keg Node Proxy',
   keg: {
     cli: {
