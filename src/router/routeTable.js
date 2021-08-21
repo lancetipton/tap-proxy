@@ -28,7 +28,7 @@ class RouteTable {
     this.config = conf
     this.updateRoutes()
     // Update routing table based on config internal or every 10 seconds
-    setInterval(this.updateRoutes.bind(this), this.config.updateInterval || 10000) 
+    setInterval(this.updateRoutes.bind(this), this.config.updateInterval || 10000)
   }
 
   /**

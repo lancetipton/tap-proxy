@@ -12,7 +12,7 @@ const { errorListener } = require('PRUtils/errorListener')
  * Initializes the Keg-Proxy Server and starts listening on the port defined in the config
  * @function
  *
- * @returns {Void}
+ * @returns {Object} - Express server object
  */
 const initProxy = async () => {
   const app = getApp()
@@ -20,7 +20,7 @@ const initProxy = async () => {
   setupCors()
   setupRouter()
   errorListener()
-  setupEndpoints(app, config)
+  setupEndpoints()
 
   const server = app.listen(app.locals.config.port, () => {
     Logger.pair('[Keg-Proxy] Server running on port: ', app.locals.config.port)
@@ -30,6 +30,8 @@ const initProxy = async () => {
     Logger.info('[Keg-Proxy] Shutting down server...')
     server.close(() => Logger.info('[Keg-Proxy] server shutdown'))
   })
+
+  return server
 
 }
 

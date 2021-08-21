@@ -1,6 +1,6 @@
-const status = require('./status')
+const routes = require('./routes')
 const rootProxy = require('./rootProxy')
-const healthCheck = require('./healthCheck')
+const health = require('./health')
 
 /**
  * Sets up all endpoints for the keg-proxy
@@ -10,8 +10,8 @@ const healthCheck = require('./healthCheck')
  *
  */
 const setupEndpoints = (...args) => {
-  status(...args)
-  healthCheck(...args)
+  routes(...args)
+  health(...args)
   rootProxy(...args)
 }
 
