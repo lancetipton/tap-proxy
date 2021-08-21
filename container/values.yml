@@ -26,7 +26,7 @@ env:
   # Turn off adding an injected compose config for keg-proxy
   KEG_NO_INJECTED_COMPOSE: true
   # Turn off auto-creating a keg-proxy sync
-  # KEG_AUTO_SYNC: false
+  KEG_AUTO_SYNC: false
 
   # Turn off the auto docker exec command after the container is started
   KEG_AUTO_DOCKER_EXEC: false
