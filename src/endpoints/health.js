@@ -10,7 +10,7 @@ const { AppRouter } = require('PRRouter')
  * @returns {*} - Response with status 200
  */
 const health = (req, res) => {
-  res.status(200).json({ status: 200, data: 'OK' }) 
+  res.status(200).send('OK') 
 }
 
 /**

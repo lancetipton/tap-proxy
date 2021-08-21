@@ -1,29 +1,28 @@
 const open = require('open')
-const { Logger } = require('@keg-hub/cli-utils')
 const { ask } = require('KegRepos/ask-it')
-const { wordCaps } = require('@keg-hub/jsutils')
-const { getProxyRoutes } = require('KegUtils/proxy/getProxyRoutes')
-const { filterProxyRoutes } = require('KegUtils/proxy/filterProxyRoutes')
+const { Logger } = require('@keg-hub/cli-utils')
+const { getProxyRoutes } = require('../../utils/getProxyRoutes')
 
 /**
  * Asks the user to select a route from a list of routes
- * @param {Array} items - Items returned from traefik api after being filtered
+ * @param {Array} routes - Routes returned from keg-proxy api
  *
  * @returns {Object} - Selected item from the list of passed in items
  */
-const askForRoute = async items => {
-  // const index = await ask.promptList(
-  //   items.map(item => {
-  //     const [ name, ...rest ] = item.service.split('-')
-  //     const branch = rest.length ? `-${rest.join('-')}\n` : '\n'
-  //     const url = `       * http://${item.rule.split('`')[1]}\n`
+const askForRoute = async routes => {
+  const urls = []
 
-  //     return `${wordCaps(name)}${branch}${url}`
-  //   }),
-  //   'Proxy Routes: ( Route | URL )\n',
-  //   'Select a Route:'
-  // )
-  // return items[index]
+  const index = await ask.promptList(
+    routes.map(({ url, display }) => {
+      urls.push(url)
+
+      return display
+    }),
+    'Proxy Routes: ( Name | URL )',
+    'Select a Route:'
+  )
+
+  return urls[index]
 }
 
 /**
@@ -37,27 +36,15 @@ const askForRoute = async items => {
  * @returns {void}
  */
 const openProxy = async args => {
-  const { params } = args
+  const { params, globalConfig } = args
   const { context, env } = params
 
   const list = await getProxyRoutes(env)
-  // TODO - update to work with new proxy response
-  
-  // const filtered = filterProxyRoutes(list, context)
+  const url = await askForRoute(list, globalConfig, env)
 
-  // !filtered.length &&
-  //   context &&
-  //   Logger.warn(`\nCould not find any routes for ${context}!\n`)
-
-  // const item = filtered.length > 1
-  //     ? await askForRoute(filtered)
-  //     : filtered.pop()
-
-  // const url = item && item.rule.split('`')[1]
-
-  // return url
-  //   ? await open(`http://${url}`)
-  //   : Logger.warn(`\nNo route found, skipping!\n`)
+  return url
+    ? await open(url)
+    : Logger.warn(`\nNo route found, skipping!\n`)
 }
 
 module.exports = {

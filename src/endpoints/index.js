@@ -1,10 +1,10 @@
-const routes = require('./routes')
-const rootProxy = require('./rootProxy')
+const proxy = require('./proxy')
 const health = require('./health')
+const routes = require('./routes')
 
 /**
  * Sets up all endpoints for the keg-proxy
- * IMPORTANT - Always add rootProxy AFTER all other endpoints
+ * IMPORTANT - Always add proxy AFTER all other endpoints
  * @function
  * @public
  *
@@ -12,7 +12,7 @@ const health = require('./health')
 const setupEndpoints = (...args) => {
   routes(...args)
   health(...args)
-  rootProxy(...args)
+  proxy(...args)
 }
 
 module.exports = {

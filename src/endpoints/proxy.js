@@ -1,7 +1,10 @@
 const url = require('url')
+const { config } = require('PRConfig')
 const proxy = require('proxy-middleware')
 const { AppRouter } = require('PRRouter')
 const { RouteTable } = require('PRRouteTable')
+
+const { host:proxyHost } = config
 
 /**
  * Request Error response handler, called when the route to proxy to can not be found
@@ -29,14 +32,33 @@ const respond404 = (res, message='Route not found in RouteTable') => {
  */
 const respondProxy = (req, res, next, proxyRoute) => {
   const proxyOptions = url.parse('http://localhost/')
-  proxyOptions.preserveHost = false
-  proxyOptions.cookieRewrite = true
-  proxyOptions.via  = true
   
-  proxyOptions.hostname = proxyRoute.address
-  proxyOptions.port = proxyRoute.port
+  Object.assign(proxyOptions, {
+    via: true,
+    preserveHost: false,
+    cookieRewrite: true,
+    port: proxyRoute.port,
+    hostname: proxyRoute.address,
+    ...config.proxy,
+  })
 
   proxy(proxyOptions)(req, res, next)
+}
+
+/**
+ * Currently just returns the routes of the routes table
+ * In the future we could add a dashboard, similar to traefik
+ * @function
+ * @private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Object} next - Express next method
+ * 
+ * @returns {*} - Response in JSON of all routes in the RoutesTable 
+ */
+const proxyDashboard = (req, res, next) => {
+  const routes = RouteTable.getRoutes()
+  res.status(200).json(Object.values(routes)) 
 }
 
 /**
@@ -49,8 +71,11 @@ const respondProxy = (req, res, next, proxyRoute) => {
  * 
  * @returns {*} - Response from the proxy
  */
-const rootProxy = (req, res, next) => {
+const proxyEndpoint = (req, res, next) => {
   try {
+
+    if(proxyHost === req.hostname)
+      return proxyDashboard(req, res, next)
 
     const destination = req.hostname.split('.')[0]
     const proxyRoute = RouteTable.getRoute(destination)
@@ -71,5 +96,5 @@ const rootProxy = (req, res, next) => {
  * @public
  */
 module.exports = () => {
-  AppRouter.get('*', rootProxy)
+  AppRouter.get('*', proxyEndpoint)
 }

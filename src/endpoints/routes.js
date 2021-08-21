@@ -12,7 +12,7 @@ const { RouteTable } = require('PRRouteTable')
  */
 const proxyRoutes = (req, res) => {
   const routes = RouteTable.getRoutes()
-  res.status(200).json({ status: 200, data: routes }) 
+  res.status(200).json(Object.values(routes)) 
 }
 
 /**

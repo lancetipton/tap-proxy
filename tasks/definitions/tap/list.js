@@ -1,7 +1,6 @@
 const { Logger } = require('@keg-hub/cli-utils')
 const { getProxyRoutes } = require('../../utils/getProxyRoutes')
 const { noOpObj, wordCaps, mapObj } = require('@keg-hub/jsutils')
-const { filterProxyRoutes } = require('../../utils/filterProxyRoutes')
 
 /**
  * Logs the items returned from the traefik api to the terminal
@@ -10,8 +9,8 @@ const { filterProxyRoutes } = require('../../utils/filterProxyRoutes')
  * @returns {Void}
  */
 const logList = list => {
-  Logger.subHeader(`[Keg-Proxy] Container Routes`)
-  Logger.log(list)
+  Logger.subHeader(`[Keg-Proxy] Route-Table`)
+  list.map(route => Logger.log(`  ${route.display}`))
   Logger.empty()
 }
 
@@ -26,15 +25,13 @@ const logList = list => {
  * @returns {void}
  */
 const listProxy = async args => {
-  const { params, __internal=noOpObj } = args
-  const { filter, env} = params
-  const log = __internal.skipLog !== true && params.log
+  const { params, globalConfig } = args
+  const { filter, env, host, log } = params
 
-  const list = await getProxyRoutes(env)
-  const filtered = filterProxyRoutes(list, filter)
-  log && logList(filtered)
+  const list = await getProxyRoutes(env, host, globalConfig)
+  log && logList(list)
 
-  return filtered
+  return list
 }
 
 module.exports = {

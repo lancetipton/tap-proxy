@@ -1,6 +1,6 @@
 const {
   KEG_PROXY_UPDATE=10000,
-  KEG_PROXY_HOST=`0.0.0.0`,
+  KEG_PROXY_HOST=`localhost`,
   KEG_PROXY_SERVER_PORT=80,
 } = process.env
 
@@ -8,6 +8,7 @@ const config = {
   host: KEG_PROXY_HOST,
   port: KEG_PROXY_SERVER_PORT,
   updateInterval: KEG_PROXY_UPDATE,
+  proxy: {},
   container: {
     portFrom: {
       env: `KEG_PROXY_PORT`,

@@ -141,6 +141,7 @@ const buildRoute = async (containerObj, config) => {
     port: port,
     name: name,
     address: address,
+    url: `${name}.${config.host}`,
   }
 }
 

@@ -1,4 +1,6 @@
 const axios = require('axios')
+const { getDomain } = require('./getDomain')
+const { formatRoute } = require('./formatRoute')
 const { limbo, isArr, get } = require('@keg-hub/jsutils')
 const { error, getKegGlobalConfig } = require('@keg-hub/cli-utils')
 
@@ -12,16 +14,20 @@ const { error, getKegGlobalConfig } = require('@keg-hub/cli-utils')
  */
 const getProxyRoutes = async (env, host, globalConfig) => {
   globalConfig = globalConfig || getKegGlobalConfig()
+  const domain = getDomain(env, host, globalConfig)
 
-  const domain = host || get(globalConfig, `cli.settings.defaultDomain`)
-  const subdomain = env || get(globalConfig, `cli.settings.defaultEnv`)
-  const [ err, res ] = await limbo(axios.get(`http://${subdomain}.${domain}//keg-proxy/routes`))
+  const [ err, res ] = await limbo(axios.get(`http://${domain}/keg-proxy/routes`))
 
-  return err
+  const routes = err
     ? error.throwError(err.message)
     : !isArr(res.data)
-      ? generalError(`No routes returned from the proxy server!`, res)
+      ? error.throwError(`No routes returned from the proxy server!`, res.data)
       : res.data
+      
+  return routes.map(route => ({
+    ...formatRoute(route, env, host, globalConfig),
+    ...route,
+  }))
 }
 
 module.exports = {
