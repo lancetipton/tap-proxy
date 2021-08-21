@@ -22,8 +22,11 @@ const initProxy = async () => {
   errorListener()
   setupEndpoints()
 
-  const server = app.listen(app.locals.config.port, () => {
-    Logger.pair('[Keg-Proxy] Server running on port: ', app.locals.config.port)
+  const { port=80, host=`localhost` } = app.locals.config
+  const server = app.listen(port, host, () => {
+    Logger.empty()
+    Logger.pair(`[Keg-Proxy] Server running on: `, `http://${host}:${port}`)
+    Logger.empty()
   })
 
   process.on('SIGTERM', () => {
