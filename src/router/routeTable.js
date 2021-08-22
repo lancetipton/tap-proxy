@@ -61,8 +61,6 @@ class RouteTable {
    * @returns {void}
    */
   updateRoutes = async () => {
-    Logger.info(`Running routes update...`)
-
     const containers = await getContainers()
 
     const promiseRoutes = containers.reduce(async (toResolve, containerObj) => {
@@ -90,7 +88,7 @@ class RouteTable {
 
       return routes
     }, Promise.resolve({}))
-    
+
     this.routes = await promiseRoutes
   }
 

@@ -1,8 +1,10 @@
-const url = require('url')
+const { getApp } = require('PRApp')
 const { config } = require('PRConfig')
-const proxy = require('proxy-middleware')
 const { AppRouter } = require('PRRouter')
+const { get } = require('@keg-hub/jsutils')
+const { dashboard } = require('./dashboard')
 const { RouteTable } = require('PRRouteTable')
+const { createProxyMiddleware } = require('http-proxy-middleware')
 
 const { host:proxyHost } = config
 
@@ -20,81 +22,84 @@ const respond404 = (res, message='Route not found in RouteTable') => {
 }
 
 /**
- * Proxy request handler, that forwards requests to the passed in subdomain
+ * Resolves the hostname from the req
+ * Uses the hostname || headers.host || headers.origin
  * @function
  * @private
  * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Object} next - Express next method
- * @param {Object} proxyRoute - Route object that contains the address and port to proxy requests to 
  * 
- * @returns {void}
+ * @returns {string} - Found hostname
  */
-const respondProxy = (req, res, next, proxyRoute) => {
-  const proxyOptions = url.parse('http://localhost/')
-  
-  Object.assign(proxyOptions, {
-    via: true,
-    preserveHost: false,
-    cookieRewrite: true,
-    port: proxyRoute.port,
-    hostname: proxyRoute.address,
-    ...config.proxy,
-  })
+const resolveHostName = req => {
+  const host = get(req, 'hostname', get(req, 'headers.host'))
+  if(host) return host.split('.')[0]
 
-  proxy(proxyOptions)(req, res, next)
+  const origin = get(req, `headers.origin`)
+  if(!origin) return
+
+  const subOrigin = origin.split('.')[0]
+  return subOrigin && subOrigin.split('://')[1]
 }
 
 /**
- * Currently just returns the routes of the routes table
- * In the future we could add a dashboard, similar to traefik
+ * Called when the proxy request throws an error
+ * If the hostname matches the proxyHost, then we re-route to it
+ * Otherwise we response with 404
  * @function
  * @private
+ * @param {Object} err - Error that was thrown while attempting to proxy
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
- * @param {Object} next - Express next method
+ * @param {string} target - The hostname of the proxy request that failed
  * 
  * @returns {*} - Response in JSON of all routes in the RoutesTable 
  */
-const proxyDashboard = (req, res, next) => {
-  const routes = RouteTable.getRoutes()
-  res.status(200).json(Object.values(routes)) 
+const onProxyError = (err, req, res, target) => {
+  return proxyHost === req.hostname
+    ? dashboard(req, res, next)
+    : respond404(res, err.message)
 }
 
 /**
- * Global root handler. Any request that reach here, get passed on to a container via the proxy
+ * Global proxy handler. Any request that reach here, get passed on to a container via the proxy
+ * It's not documented anywhere, but if null is returned, the express app router handles the request
+ * This allows the `<domain>/keg-proxy/**` routes to work
  * @function
  * @private
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Object} next - Express next method
  * 
- * @returns {*} - Response from the proxy
+ * @returns {Object} - Contains the port and host ip address to proxy the request to
  */
-const proxyEndpoint = (req, res, next) => {
-  try {
+const proxyRouter = req => {
+  const destination = resolveHostName(req)
+  if(!destination) return null
+  
+  const route = RouteTable.getRoute(destination)
+  if(!route) return null
 
-    if(proxyHost === req.hostname)
-      return proxyDashboard(req, res, next)
-
-    const destination = req.hostname.split('.')[0]
-    const proxyRoute = RouteTable.getRoute(destination)
-
-    return proxyRoute
-      ? respondProxy(req, res, next, proxyRoute)
-      : respond404(res)
-
-  }
-  catch(err){
-    respond404(res, err.message)
-  }
-}
+  return { port: route.port, host: route.address }
+} 
 
 /**
  * Sets up a catch all for all requests not picked up by other endpoints
+ * Currently because of `app.use`, all request are picked up by the proxy no matter what
+ * To allow `keg-proxy/**` routes to work, the proxyRouter method returns null when a route can't be found
+ * Which then defaults back to using the internal express AppRouter
+ * This functionality is not documented anywhere, so it's possible it could change
+ * Will need to work out an alternate solution if it does
  * @function
  * @public
  */
 module.exports = () => {
-  AppRouter.get('*', proxyEndpoint)
+  const app = getApp()
+  app.use(`**`, createProxyMiddleware({
+    ws: true,
+    logLevel: 'error',
+    target: proxyHost,
+    ...config.proxy,
+    router: proxyRouter,
+    onError: onProxyError,
+  }))
 }
