@@ -14,7 +14,10 @@ RUN apk add bash; \
     echo fs.inotify.max_user_watches=1048576 | tee -a /etc/sysctl.conf; \
     sysctl -p; \
     rm -rf /var/cache/apk/*; \
-    yarn global add nodemon --pure-lockfile
+    yarn config delete https-proxy; \
+    yarn config delete proxy; \
+    yarn global add nodemon --pure-lockfile --verbose; \
+    yarn cache clean
 
 # Proxy ports exposed by docker
 ARG KEG_PROXY_SERVER_PORT=80
@@ -35,7 +38,7 @@ ENV KEG_EXEC_CMD=$KEG_EXEC_CMD
 COPY ./package.json /key-temp/package.json
 RUN mkdir -p /key-temp; \
     cd /key-temp; \
-    yarn install --pure-lockfile; \
+    yarn install --pure-lockfile --verbose; \
     yarn cache clean
 
 # Then copy  over the reset of the code
