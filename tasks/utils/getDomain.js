@@ -3,7 +3,7 @@ const { getKegGlobalConfig } = require('@keg-hub/cli-utils')
 
 /**
  * Gets the domain for route based on the env, host, and keg-cli globalConfig
- * @param {string} env - The env the keg-proxy was started in
+ * @param {string} env - The env the tap-proxy was started in
  * @param {string} host - Domain when the proxy is running
  * @param {Object} [globalConfig] - Keg-Cli globalConfig
  *

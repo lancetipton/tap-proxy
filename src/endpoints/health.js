@@ -19,5 +19,5 @@ const health = (req, res) => {
  * @public
  */
 module.exports = () => {
-  AppRouter.get('/keg-proxy/health', health)
+  AppRouter.get('/tap-proxy/health', health)
 }

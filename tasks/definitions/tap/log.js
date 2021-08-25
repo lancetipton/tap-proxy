@@ -1,6 +1,6 @@
 const { docker } = require('@keg-hub/cli-utils')
 /**
- * Starts logging the keg-proxy container
+ * Starts logging the tap-proxy container
  * @param {Object} args - arguments passed from the runTask method
  * @param {string} args.command - Root task name
  * @param {Object} args.tasks - All registered tasks of the CLI
@@ -13,7 +13,7 @@ const { docker } = require('@keg-hub/cli-utils')
  */
 const logTap = async (args) => {
   const { params: { follow } } = args
-  const cmd = [`logs`, `keg-proxy`]
+  const cmd = [`logs`, `tap-proxy`]
   follow && cmd.push(`-f`)
 
   await docker(cmd.join(' '))
@@ -26,7 +26,7 @@ module.exports = {
     action: logTap,
     example: 'proxy log',
     mergeOptions: true,
-    description : 'Starts Keg-Proxy docker container',
+    description : 'Starts Tap-Proxy docker container',
     options: {
       follow: {
         alias: ['fl'],

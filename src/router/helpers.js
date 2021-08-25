@@ -1,4 +1,5 @@
 const Docker = require('dockerode')
+const { PORT_FROM_KEYS } = require('PRConstants')
 const { logInvalidRoute, logError } = require('PRUtils/logger')
 const { limbo, get, noOpObj, noPropArr } = require('@keg-hub/jsutils')
 
@@ -69,11 +70,41 @@ const resolveName = (containerObj, config) => {
 }
 
 /**
+ * Loops over the possible port location from the PORT_FROM_KEYS constant
+ * Checks the proxy.config for any matching ports. First found is returned
+ * Order checked is - env | labels | container.port | inspect path ( dot notation ) 
+ * @function
+ * @public
+ * @param {Object} containerObj - JSON object instance of a container returned from dockerode
+ *
+ * @returns {string} - Formatted name of the container
+ */
+const resolvePortFrom = (config, data) => {
+  // Get the config for finding the port
+  const portFrom = get(config, 'container.portFrom', noOpObj)
+
+  // Pull the port from a container ENV
+  return Object.entries(PORT_FROM_KEYS)
+    .reduce((found, [type, loc]) => {
+      if(found || !portFrom[type]) return found
+
+      const fromType = portFrom[type]
+      const rootLoc = get(data, loc)
+      // Try to use dot notation to resolve the port
+      // If that fails try direct reference
+      // Labels have . in them, so we use direct reference as a fallback
+      const portVal = get(rootLoc, fromType, rootLoc[fromType])
+
+      return portVal || found
+    }, false)
+}
+
+/**
  * Finds the port for the route based on the containerObj, and config
  * @function
  * @public
  * @param {Object} containerObj - JSON object instance of a container returned from dockerode
- * @param {Object} config - Global keg-proxy config
+ * @param {Object} config - Global tap-proxy config
  *
  * @returns {string|number} - Found port or null
  */
@@ -83,25 +114,11 @@ const resolvePort = async (containerObj, config) => {
   const [insErr, inspectObj] = await limboify(container.inspect.bind(container))
   if(insErr) return console.error(insErr)
 
-  // Get the config for finding the port
-  const portFrom = get(config, 'container.portFrom', noOpObj)
+  return resolvePortFrom(config, {
+    inspectObj,
+    containerObj
+  })
 
-  // Pull the port from a container ENV
-  const envPort = portFrom.env && get(inspectObj, `Config.Env.${portFrom.env}`)
-  if(envPort) return envPort
-
-  // Pull the port from a container label
-  const labelsObj = get(containerObj, `Labels`, {})
-  const labelPort = portFrom.label && labelsObj[portFrom.label]
-  if(labelPort) return labelPort
-
-  // Pull the port from an exposed port on the container
-  const privatePort = portFrom.port && get(containerObj, `Ports.${portFrom.port}`)
-  if(privatePort) return privatePort
-
-  // Pull the port from a path on the inspect container object
-  const inspectPort = portFrom.inspect && get(containerObj, portFrom.inspect)
-  if(inspectPort) return inspectPort
 }
 
 /**
@@ -109,7 +126,7 @@ const resolvePort = async (containerObj, config) => {
  * @function
  * @public
  * @param {Object} containerObj - JSON object instance of a container returned from dockerode
- * @param {Object} config - Global keg-proxy config
+ * @param {Object} config - Global tap-proxy config
  *
  * @returns {string|number} - Found port or null
  */

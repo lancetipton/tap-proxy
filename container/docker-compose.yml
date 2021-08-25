@@ -1,15 +1,15 @@
 version: "3.8"
 services:
-  keg-proxy:
+  tap-proxy:
     image: ${KEG_IMAGE_FROM}
-    container_name: keg-proxy
+    container_name: tap-proxy
     tty: true
     stdin_open: true
     networks:
       - keg-hub-net
     build:
-      context: /Users/lancetipton/keg-hub/taps/keg-proxy
-      dockerfile: /Users/lancetipton/keg-hub/taps/keg-proxy/container/Dockerfile
+      context: /Users/lancetipton/keg-hub/taps/tap-proxy
+      dockerfile: /Users/lancetipton/keg-hub/taps/tap-proxy/container/Dockerfile
     environment:
       - DOC_APP_PATH
       - DOC_BUILD_PATH

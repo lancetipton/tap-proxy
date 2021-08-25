@@ -10,7 +10,7 @@ const { Logger } = require('@keg-hub/cli-utils')
  * @returns {Void}
  */
 const logError = (...args) => {
-  Logger.error(`[Error Keg-Proxy]`, args.shift())
+  Logger.error(`[Error Tap-Proxy]`, args.shift())
   args.length && Logger.error(...args)
 }
 
@@ -25,7 +25,7 @@ const logError = (...args) => {
 const logRequest = req => {
   const host = req.headers.host
   const url = req.originalUrl
-  let message = [`[Keg-Proxy] Request: ${host}${url}`]
+  let message = [`[Tap-Proxy] Request: ${host}${url}`]
   !isEmpty(req.query)
     && (message = [...message, `\n  [Query]`, req.query ])
 

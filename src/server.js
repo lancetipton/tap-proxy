@@ -9,7 +9,7 @@ const { setupCors } = require('PRUtils/setupCors')
 const { errorListener } = require('PRUtils/errorListener')
 
 /**
- * Initializes the Keg-Proxy Server and starts listening on the port defined in the config
+ * Initializes the Tap-Proxy Server and starts listening on the port defined in the config
  * @function
  *
  * @returns {Object} - Express server object
@@ -25,13 +25,13 @@ const initProxy = async () => {
   const { port=80, host=`localhost` } = app.locals.config
   const server = app.listen(port, () => {
     Logger.empty()
-    Logger.pair(`[Keg-Proxy] Server running on: `, `http://${host}:${port}`)
+    Logger.pair(`[Tap-Proxy] Server running on: `, `http://${host}:${port}`)
     Logger.empty()
   })
 
   process.on('SIGTERM', () => {
-    Logger.info('[Keg-Proxy] Shutting down server...')
-    server.close(() => Logger.info('[Keg-Proxy] server shutdown'))
+    Logger.info('[Tap-Proxy] Shutting down server...')
+    server.close(() => Logger.info('[Tap-Proxy] server shutdown'))
   })
 
   return server

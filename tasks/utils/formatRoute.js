@@ -4,8 +4,8 @@ const { Logger, getKegGlobalConfig } = require('@keg-hub/cli-utils')
 
 /**
  * Formats the passed in routes while also creating the URL from the proxy host
- * @param {Object} route - Route object return from the keg-proxy api 
- * @param {string} env - The env the keg-proxy was started in
+ * @param {Object} route - Route object return from the tap-proxy api 
+ * @param {string} env - The env the tap-proxy was started in
  * @param {string} host - Domain when the proxy is running
  * @param {Object} [globalConfig] - Keg-Cli globalConfig
  *

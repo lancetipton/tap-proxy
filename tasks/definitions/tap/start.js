@@ -1,6 +1,6 @@
 
 /**
- * Starts the keg-proxy tap with docker-compose calling the keg-cli tap start task
+ * Starts the tap-proxy tap with docker-compose calling the keg-cli tap start task
  * @param {Object} args - arguments passed from the runTask method
  * @param {string} args.command - Root task name
  * @param {Object} args.tasks - All registered tasks of the CLI
@@ -24,7 +24,7 @@ module.exports = {
     example: 'proxy start',
     // Merge the default task options with these custom task options
     mergeOptions: true,
-    description : 'Starts Keg-Proxy docker container',
+    description : 'Starts Tap-Proxy docker container',
     options: {
       pull: {
         alias: ['pl'],

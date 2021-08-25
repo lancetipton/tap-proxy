@@ -4,7 +4,7 @@ const routes = require('./routes')
 const dashboard = require('./dashboard')
 
 /**
- * Sets up all endpoints for the keg-proxy
+ * Sets up all endpoints for the tap-proxy
  * IMPORTANT - Always add proxy AFTER all other endpoints
  * @function
  * @public

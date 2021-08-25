@@ -1,6 +1,6 @@
 # Add a FROM for the proxy image to we can copy content from it
 ARG KEG_NODE_IMAGE=node:14.7-alpine
-FROM $KEG_NODE_IMAGE as keg-proxy
+FROM $KEG_NODE_IMAGE as tap-proxy
 
 # Ensure the app path is set within the FROM scope
 ARG DOC_APP_PATH=/keg/tap
@@ -25,7 +25,7 @@ ARG KEG_EXEC_CMD=proxy
 ENV KEG_EXEC_CMD=$KEG_EXEC_CMD
 
 # ---------- Notes ---------- #
-# The following allows for keg-proxy code to change,
+# The following allows for tap-proxy code to change,
 # but keeps the node_modules folder cached
 # This way if the image is rebuilt,
 # if the node_modules have not change, it will use the docker cached instead of reinstalling

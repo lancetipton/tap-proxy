@@ -5,7 +5,7 @@ const { getProxyRoutes } = require('../../utils/getProxyRoutes')
 
 /**
  * Asks the user to select a route from a list of routes
- * @param {Array} routes - Routes returned from keg-proxy api
+ * @param {Array} routes - Routes returned from tap-proxy api
  *
  * @returns {Object} - Selected item from the list of passed in items
  */
@@ -26,7 +26,7 @@ const askForRoute = async routes => {
 }
 
 /**
- * Lists all containers registered to the keg-proxy
+ * Lists all containers registered to the tap-proxy
  * @param {Object} args - arguments passed from the runTask method
  * @param {string} args.command - Initial command being run
  * @param {Array} args.options - arguments passed from the command line

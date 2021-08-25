@@ -23,7 +23,7 @@ const proxyDashboard = (req, res) => {
  * @public
  */
 module.exports = () => {
-  AppRouter.get('/keg-proxy', proxyDashboard)
+  AppRouter.get('/tap-proxy', proxyDashboard)
 }
 
 // Export the dashboard handler after setting the main exports function

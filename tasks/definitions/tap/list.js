@@ -9,13 +9,13 @@ const { noOpObj, wordCaps, mapObj } = require('@keg-hub/jsutils')
  * @returns {Void}
  */
 const logList = list => {
-  Logger.subHeader(`[Keg-Proxy] Route-Table`)
+  Logger.subHeader(`[Tap-Proxy] Route-Table`)
   list.map(route => Logger.log(`  ${route.display}`))
   Logger.empty()
 }
 
 /**
- * Lists all containers registered to the keg-proxy
+ * Lists all containers registered to the tap-proxy
  * @param {Object} args - arguments passed from the runTask method
  * @param {string} args.command - Initial command being run
  * @param {Array} args.options - arguments passed from the command line

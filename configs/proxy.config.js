@@ -11,10 +11,10 @@ const config = {
   proxy: {},
   container: {
     portFrom: {
-      env: `KEG_PROXY_PORT`,
-      label: `com.keg.env.port`,
-      port: `0.PrivatePort`,
-      inspect: `some.path.on.inspect.object`
+      env: [`TAP_PROXY_PORT` `KEG_PROXY_PORT`],
+      label: [`com.keg.env.port`],
+      port: [`0.PrivatePort`],
+      inspect: [`some.path.on.inspect.object`]
     },
     ipFrom: {
       network: true,

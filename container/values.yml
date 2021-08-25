@@ -1,31 +1,31 @@
 # Not currently setup, but will be at some point
 # Using settings would allow separating keg-cli settings from ENV values
 settings: 
-  # Turn off adding an injected compose config for keg-proxy
+  # Turn off adding an injected compose config for tap-proxy
   injectedCompose: true
   # Turn off auto-building the keg-base image
   autoBuildBase: false
-  # Turn off auto-creating a keg-proxy sync in develop environments
+  # Turn off auto-creating a tap-proxy sync in develop environments
   autoSync: true
   # Toggle merging the default mutagen sync config with the taps config
   useSyncDefault: false
   # Ensures watchtower won't restart the container when a new image is found (default is true)
   watchTowerEnabled: false
-  # Disable auto starting the keg-proxy
+  # Disable auto starting the tap-proxy
   useKegProxy: false
   # Disable calling docker exec on the container after it's started
   useAutoExec: false
 
 env:
   # --- LOCAL ENV CONTEXT --- #
-  IMAGE: 'keg-proxy'
+  IMAGE: 'tap-proxy'
 
   # --- LOCAL ENV CONTEXT --- #
   KEG_CONTEXT_PATH: "{{ cli.taps.kpy.path }}"
 
-  # Turn off adding an injected compose config for keg-proxy
+  # Turn off adding an injected compose config for tap-proxy
   KEG_NO_INJECTED_COMPOSE: true
-  # Turn off auto-creating a keg-proxy sync
+  # Turn off auto-creating a tap-proxy sync
   KEG_AUTO_SYNC: false
 
   # Turn off the auto docker exec command after the container is started
@@ -40,9 +40,9 @@ env:
   KEG_NODE_IMAGE: node:14.7-alpine
   
   # Set the default image from, even when not being used
-  KEG_IMAGE_FROM: ghcr.io/simpleviewinc/keg-proxy:develop
+  KEG_IMAGE_FROM: ghcr.io/simpleviewinc/tap-proxy:develop
 
-  # Turn off using the keg-proxy
+  # Turn off using the tap-proxy
   KEG_USE_PROXY: false
 
   # Ensures watchtower won't restart the container when a new image is found (default is true)

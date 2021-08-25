@@ -21,5 +21,5 @@ const proxyRoutes = (req, res) => {
  * @public
  */
 module.exports = () => {
-  AppRouter.get('/keg-proxy/routes', proxyRoutes)
+  AppRouter.get('/tap-proxy/routes', proxyRoutes)
 }

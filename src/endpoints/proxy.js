@@ -63,7 +63,7 @@ const onProxyError = (err, req, res, target) => {
 /**
  * Global proxy handler. Any request that reach here, get passed on to a container via the proxy
  * It's not documented anywhere, but if null is returned, the express app router handles the request
- * This allows the `<domain>/keg-proxy/**` routes to work
+ * This allows the `<domain>/tap-proxy/**` routes to work
  * @function
  * @private
  * @param {Object} req - Express request object
@@ -85,7 +85,7 @@ const proxyRouter = req => {
 /**
  * Sets up a catch all for all requests not picked up by other endpoints
  * Currently because of `app.use`, all request are picked up by the proxy no matter what
- * To allow `keg-proxy/**` routes to work, the proxyRouter method returns null when a route can't be found
+ * To allow `tap-proxy/**` routes to work, the proxyRouter method returns null when a route can't be found
  * Which then defaults back to using the internal express AppRouter
  * This functionality is not documented anywhere, so it's possible it could change
  * Will need to work out an alternate solution if it does

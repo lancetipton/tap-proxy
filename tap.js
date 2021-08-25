@@ -1,10 +1,10 @@
 module.exports = {
-  name: 'keg-proxy',
-  displayName: 'Keg Node Proxy',
+  name: 'tap-proxy',
+  displayName: 'Tap Proxy',
   keg: {
     cli: {
       link: {
-        name: 'kpy'
+        name: 'proxy'
       },
     },
     tapResolver: {

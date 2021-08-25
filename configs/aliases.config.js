@@ -8,6 +8,7 @@ const rootDir = path.join(__dirname, '../')
 const aliases = deepFreeze({
   PRSrc: path.join(rootDir, 'src'),
   PRApp: path.join(rootDir, 'src/app'),
+  PRConstants: path.join(rootDir, 'src/constants'),
   PRTasks: path.join(rootDir, 'tasks'),
   PRConfigs: path.join(rootDir, 'configs'),
   PRUtils: path.join(rootDir, 'src/utils'),

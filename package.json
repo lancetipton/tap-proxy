@@ -1,5 +1,5 @@
 {
-  "name": "keg-proxy",
+  "name": "tap-proxy",
   "version": "0.0.0",
   "description": "Simple proxy for taps running under subdomains",
   "main": "index.js",
@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean": "cd node_modules/keg-core; yarn clean",
+    "clean": "",
     "clean:install": "yarn clean:nm; yarn install",
     "clean:full": "yarn clean; yarn clean:nm; yarn install",
     "clean:nm": "rimraf ./yarn.lock; rimraf ./package.lock; rimraf node_modules",
