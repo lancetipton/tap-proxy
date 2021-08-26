@@ -55,6 +55,21 @@ class RouteTable {
   }
 
   /**
+   * Resets the routes and invalid routes
+   * Then calls this.updateRoutes to get the most up to date routes
+   * @function
+   * @memberof RouteTable
+   *
+   * @returns {void}
+   */
+  resetRoutes = () => {
+    Logger.info(`[RouteTable] Resetting routes...`)
+    this.routes = {}
+    this.invalid = {}
+    this.updateRoutes()
+  }
+
+  /**
    * Updates the routes object with routes built from all running containers
    * @function
    * @memberof RouteTable
@@ -66,32 +81,32 @@ class RouteTable {
     const containers = await getContainers()
 
     const promiseRoutes = containers.reduce(async (toResolve, containerObj) => {
-          const routes = await toResolve
+      const routes = await toResolve
 
-          // If no container object, or it's the tap-proxy, then skip it
-          if(!containerObj) return routes
+      // If no container object, or it's the tap-proxy, then skip it
+      if(!containerObj || containerObj.Image.includes(`/tap-proxy`)) return routes
 
-          const route = await buildRoute(containerObj, this.config)
-          const containerName = formatName(containerObj)
+      const route = await buildRoute(containerObj, this.config)
+      const containerName = formatName(containerObj)
 
-          // Validate the route and properties
-          if(!isValidRoute(containerName, route, this.invalid))
-            return routes
+      // Validate the route and properties
+      if(!isValidRoute(containerName, route, this.invalid))
+        return routes
 
-          // If it was invalid previously, then remove it
-          if(this.invalid[containerName]) delete this.invalid[containerName]
+      // If it was invalid previously, then remove it
+      if(this.invalid[containerName]) delete this.invalid[containerName]
 
-          const current = this.routes[route.name]
+      const current = this.routes[route.name]
 
-          typeof current === 'undefined'
-            ? Logger.pair(`[RouteTable] Adding container route:`, route.name)
-            : (current.address !== route.address || current.port !== route.port)
-                && Logger.pair('[RouteTable] Updating container route:', route.name)
+      typeof current === 'undefined'
+        ? Logger.pair(`[RouteTable] Adding container route:`, route.url)
+        : (current.address !== route.address || current.port !== route.port)
+            && Logger.pair('[RouteTable] Updating container route:', route.url)
 
-          routes[route.name] = { ...current, ...route }
+      routes[route.name] = { ...current, ...route }
 
-          return routes
-        }, Promise.resolve({}))
+      return routes
+    }, Promise.resolve({}))
 
     this.routes = await promiseRoutes
   }
