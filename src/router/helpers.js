@@ -1,7 +1,7 @@
 const Docker = require('dockerode')
 const { PORT_FROM_KEYS } = require('PRConstants')
 const { logInvalidRoute, logError } = require('PRUtils/logger')
-const { limbo, get, noOpObj, noPropArr } = require('@keg-hub/jsutils')
+const { limbo, get, noOpObj, noPropArr, eitherArr, isStr } = require('@keg-hub/jsutils')
 
 /**
  * Instance of the Docker API from dockerode
@@ -60,13 +60,26 @@ const getContainers = async () => {
  * @returns {string} - Formatted name of the container
  */
 const resolveName = (containerObj, config) => {
+  // May want to add the tag from the image. Will need to investigate
+  // const nameFromImg = containerObj.Image.split('/').pop().replace(':', '-')
   const name = formatName(containerObj)
-    
-  // TODO - Check for prefixes, img and package, then remove them if needed
-  // Need to add labels to proxy config
-  return name
-    .replace(/^package-/, '')
-    .replace(/^img-/, '')
+  const namePrefix = get(config, 'container.namePrefix', noPropArr)
+
+  return eitherArr(namePrefix, [namePrefix])
+    .reduce((cleanedName, item) => {
+      return isStr(item)
+        ? cleanedName.replace(new RegExp(item), '')
+        : cleanedName
+    }, name)
+}
+
+const containerEnvToObj = (containerEnv) => {
+  return containerEnv.reduce((containerObj, item) => {
+    const [key, val] = item.split('=')
+    val && (containerObj[key] = val)
+
+    return containerObj
+  }, {})
 }
 
 /**
@@ -90,10 +103,20 @@ const resolvePortFrom = (config, data) => {
 
       const fromType = portFrom[type]
       const rootLoc = get(data, loc)
+      
+      // Envs need to be converted into an object
+      // The inspect object returns them as an array as `key=value`
+      const potentialVals = type === 'env'
+        ? containerEnvToObj(rootLoc)
+        : rootLoc
+      
       // Try to use dot notation to resolve the port
       // If that fails try direct reference
       // Labels have . in them, so we use direct reference as a fallback
-      const portVal = get(rootLoc, fromType, rootLoc[fromType])
+      const portVal = eitherArr(fromType, [fromType])
+        .reduce((foundVal, item) => {
+          return foundVal || get(potentialVals, item, potentialVals[item])
+        }, false)
 
       return portVal || found
     }, false)

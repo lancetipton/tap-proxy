@@ -1,5 +1,6 @@
 const { config } = require('PRConfig')
 const { Logger } = require('PRUtils/logger')
+const { noOpObj } = require('@keg-hub/jsutils')
 const {
   resolveIP,
   buildRoute,
@@ -61,33 +62,36 @@ class RouteTable {
    * @returns {void}
    */
   updateRoutes = async () => {
+    // Logger.info(`[RouteTable] Updating RouteTable...`)
     const containers = await getContainers()
 
     const promiseRoutes = containers.reduce(async (toResolve, containerObj) => {
-      const routes = await toResolve
+          const routes = await toResolve
 
-      if(!containerObj) return routes
+          // If no container object, or it's the tap-proxy, then skip it
+          if(!containerObj) return routes
 
-      const route = await buildRoute(containerObj, this.config)
-      const containerName = formatName(containerObj)
-      // Validate the route and properties
-      if(!isValidRoute(containerName, route, this.invalid))
-        return routes
+          const route = await buildRoute(containerObj, this.config)
+          const containerName = formatName(containerObj)
 
-      // If it was invalid previously, then remove it
-      if(this.invalid[containerName]) delete this.invalid[containerName]
+          // Validate the route and properties
+          if(!isValidRoute(containerName, route, this.invalid))
+            return routes
 
-      const current = this.routes[route.name]
+          // If it was invalid previously, then remove it
+          if(this.invalid[containerName]) delete this.invalid[containerName]
 
-      typeof current === 'undefined'
-        ? Logger.pair(`[RouteTable] Adding container route:`, route.name)
-        : (current.address !== route.address || current.port !== route.port)
-            && Logger.pair('[RouteTable] Updating container route:', route.name)
+          const current = this.routes[route.name]
 
-      routes[route.name] = { ...current, ...route }
+          typeof current === 'undefined'
+            ? Logger.pair(`[RouteTable] Adding container route:`, route.name)
+            : (current.address !== route.address || current.port !== route.port)
+                && Logger.pair('[RouteTable] Updating container route:', route.name)
 
-      return routes
-    }, Promise.resolve({}))
+          routes[route.name] = { ...current, ...route }
+
+          return routes
+        }, Promise.resolve({}))
 
     this.routes = await promiseRoutes
   }

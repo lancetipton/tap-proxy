@@ -21,8 +21,8 @@ const config = {
       containerId: true,
     },
     namePrefix: [
-      /^package-/,
-      /^img-/
+      `^package-`,
+      `^img-`,
     ]
   }
 }
