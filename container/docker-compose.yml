@@ -8,8 +8,8 @@ services:
     networks:
       - keg-hub-net
     build:
-      context: /Users/lancetipton/keg-hub/taps/tap-proxy
-      dockerfile: /Users/lancetipton/keg-hub/taps/tap-proxy/container/Dockerfile
+      context: ../
+      dockerfile: ./Dockerfile
     environment:
       - DOC_APP_PATH
       - DOC_BUILD_PATH
