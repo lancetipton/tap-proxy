@@ -8,6 +8,7 @@
 cd $DOC_APP_PATH
 [[ -z "$KEG_EXEC_CMD" ]] && KEG_EXEC_CMD=proxy
 
+# Allows the logs from the node process started by yarn to be piped to the docker logs output
 yarn $KEG_EXEC_CMD >> /proc/1/fd/1 &
 
 # If the no KEG_DOCKER_EXEC env is set, just sleep forever

@@ -16,7 +16,7 @@ const proxyRoutes = (req, res) => {
 }
 
 /**
- * Endpoint to reset the RouteTable to it will recheck for container routes
+ * Endpoint to reset the RouteTable so it will recheck for container routes
  * @function
  * @private
  * @param {Object} req - Express request object

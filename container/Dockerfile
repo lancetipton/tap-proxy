@@ -35,17 +35,17 @@ ENV KEG_EXEC_CMD=$KEG_EXEC_CMD
 
 # Copy over the package.json and install node_modules
 # To a temp directory
-COPY ./package.json /key-temp/package.json
-RUN mkdir -p /key-temp; \
-    cd /key-temp; \
+COPY ./package.json /keg-temp/package.json
+RUN mkdir -p /keg-temp; \
+    cd /keg-temp; \
     yarn install --pure-lockfile --verbose; \
     yarn cache clean
 
-# Then copy  over the reset of the code
+# Then copy  over the rest of the code
 # and copy in the installed node_modules
 COPY . .
-RUN cp -R /key-temp/. .; \
-    rm -rf /key-temp
+RUN cp -R /keg-temp/. .; \
+    rm -rf /keg-temp
 # ---------- Notes ---------- #
 
 CMD ["/bin/bash", "container/run.sh"]
