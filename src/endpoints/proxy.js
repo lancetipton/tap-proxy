@@ -1,9 +1,9 @@
 const { getApp } = require('PRApp')
 const { config } = require('PRConfig')
-const { AppRouter } = require('PRRouter')
 const { get } = require('@keg-hub/jsutils')
 const { dashboard } = require('./dashboard')
 const { RouteTable } = require('PRRouteTable')
+const { Logger } = require('@keg-hub/cli-utils')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 
 const { host:proxyHost } = config
@@ -82,6 +82,10 @@ const proxyRouter = req => {
   return { port: route.port, host: route.address }
 } 
 
+const addAllowOriginHeader = (proxyRes, origin) => {
+  proxyRes.headers['Access-Control-Allow-Origin'] = origin
+}
+
 /**
  * Sets up a catch all for all requests not picked up by other endpoints
  * Currently because of `app.use`, all request are picked up by the proxy no matter what
@@ -94,6 +98,7 @@ const proxyRouter = req => {
  */
 module.exports = () => {
   const app = getApp()
+
   app.use(`**`, createProxyMiddleware({
     ws: true,
     logLevel: 'error',
@@ -103,7 +108,16 @@ module.exports = () => {
     onError: onProxyError,
     onProxyRes: (proxyRes, req, res) => {
       const origin = req.get('origin').trim()
-      proxyRes.headers['Access-Control-Allow-Origin'] = origin
+      if(origin){
+        config.origins.includes('*')
+          ? addAllowOriginHeader(proxyRes, origin)
+          :  config.origins.includes(origin)
+              ? addAllowOriginHeader(proxyRes, origin)
+              : Logger.error(`Origin ${origin} does not match allowed origins ${config.origins.join(', ')}`)
+      }
     },
   }))
+
+
+
 }

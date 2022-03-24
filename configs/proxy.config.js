@@ -2,12 +2,14 @@ const {
   KEG_PROXY_UPDATE=10000,
   KEG_PROXY_HOST=`localhost`,
   KEG_PROXY_SERVER_PORT=80,
+  KEG_PROXY_ALLOWED_ORIGINS=`localhost,local.keghub.io`,
 } = process.env
 
 const config = {
   host: KEG_PROXY_HOST,
   port: KEG_PROXY_SERVER_PORT,
   updateInterval: KEG_PROXY_UPDATE,
+  origins: KEG_PROXY_ALLOWED_ORIGINS.split(','),
   proxy: {},
   container: {
     portFrom: {
