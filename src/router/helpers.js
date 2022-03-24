@@ -109,7 +109,7 @@ const resolvePortFrom = (config, data) => {
       const potentialVals = type === 'env'
         ? containerEnvToObj(rootLoc)
         : rootLoc
-      
+
       // Try to use dot notation to resolve the port
       // If that fails try direct reference
       // Labels have . in them, so we use direct reference as a fallback

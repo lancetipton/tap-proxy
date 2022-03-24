@@ -11,7 +11,7 @@ const config = {
   proxy: {},
   container: {
     portFrom: {
-      env: [`TAP_PROXY_PORT`, `KEG_PROXY_PORT`],
+      env: [ `API_PORT`, `TAP_PROXY_PORT`, `KEG_PROXY_PORT`],
       label: [`com.keg.env.port`],
       port: [`0.PrivatePort`],
       // inspect: [`some.path.on.inspect.object`]
@@ -23,6 +23,7 @@ const config = {
     namePrefix: [
       `^package-`,
       `^img-`,
+      `^keg-`,
     ]
   }
 }

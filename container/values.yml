@@ -23,6 +23,7 @@ env:
   # --- LOCAL ENV CONTEXT --- #
   KEG_CONTEXT_PATH: "{{ cli.taps.tp.path }}"
   SRC_PATH: {{ cli.taps.tp.path }}/src
+  CONFIGS_PATH: {{ cli.taps.tp.path }}/configs
 
   # Turn off adding an injected compose config for tap-proxy
   KEG_NO_INJECTED_COMPOSE: true
@@ -60,6 +61,7 @@ env:
   # Default location of the tap in the docker container
   DOC_APP_PATH: /keg/tap
   DOC_SRC_PATH: /keg/tap/src
+  DOC_CONFIGS_PATH: /keg/tap/configs
 
   # Default host for the keg proxy
   KEG_PROXY_HOST: local.keghub.io

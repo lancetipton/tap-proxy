@@ -101,5 +101,9 @@ module.exports = () => {
     ...config.proxy,
     router: proxyRouter,
     onError: onProxyError,
+    onProxyRes: (proxyRes, req, res) => {
+      const origin = req.get('origin').trim()
+      proxyRes.headers['Access-Control-Allow-Origin'] = origin
+    },
   }))
 }
