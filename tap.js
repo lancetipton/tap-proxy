@@ -1,10 +1,11 @@
 module.exports = {
   name: 'tap-proxy',
+  alias: 'tp',
   displayName: 'Tap Proxy',
   keg: {
     cli: {
       link: {
-        name: 'proxy'
+        name: 'tp'
       },
     },
     tapResolver: {

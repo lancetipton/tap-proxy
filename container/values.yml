@@ -21,10 +21,12 @@ env:
   IMAGE: 'tap-proxy'
 
   # --- LOCAL ENV CONTEXT --- #
-  KEG_CONTEXT_PATH: "{{ cli.taps.kpy.path }}"
+  KEG_CONTEXT_PATH: "{{ cli.taps.tp.path }}"
+  SRC_PATH: {{ cli.taps.tp.path }}/src
 
   # Turn off adding an injected compose config for tap-proxy
   KEG_NO_INJECTED_COMPOSE: true
+
   # Turn off auto-creating a tap-proxy sync
   KEG_AUTO_SYNC: false
 
@@ -40,7 +42,7 @@ env:
   KEG_NODE_IMAGE: node:14.7-alpine
   
   # Set the default image from, even when not being used
-  KEG_IMAGE_FROM: ghcr.io/simpleviewinc/tap-proxy:develop
+  KEG_IMAGE_FROM: ghcr.io/keg-hub/tap-proxy:develop
 
   # Turn off using the tap-proxy
   KEG_USE_PROXY: false
@@ -50,13 +52,14 @@ env:
 
   # --- PROXY ENV CONTEXT --- #
 
-  KEG_DOCKER_FILE: "{{ cli.taps.kpy.path }}/container/Dockerfile"
-  KEG_VALUES_FILE: "{{ cli.taps.kpy.path }}/container/values.yml"
-  KEG_MUTAGEN_FILE: "{{ cli.taps.kpy.path }}/container/mutagen.yml"
-  KEG_COMPOSE_DEFAULT: "{{ cli.taps.kpy.path }}/container/docker-compose.yml"
+  KEG_DOCKER_FILE: "{{ cli.taps.tp.path }}/container/Dockerfile"
+  KEG_VALUES_FILE: "{{ cli.taps.tp.path }}/container/values.yml"
+  KEG_MUTAGEN_FILE: "{{ cli.taps.tp.path }}/container/mutagen.yml"
+  KEG_COMPOSE_DEFAULT: "{{ cli.taps.tp.path }}/container/docker-compose.yml"
 
   # Default location of the tap in the docker container
   DOC_APP_PATH: /keg/tap
+  DOC_SRC_PATH: /keg/tap/src
 
   # Default host for the keg proxy
   KEG_PROXY_HOST: local.keghub.io

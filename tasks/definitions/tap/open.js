@@ -1,5 +1,5 @@
 const open = require('open')
-const { ask } = require('KegRepos/ask-it')
+const { ask } = require('@keg-hub/ask-it')
 const { Logger } = require('@keg-hub/cli-utils')
 const { getProxyRoutes } = require('../../utils/getProxyRoutes')
 

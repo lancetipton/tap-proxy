@@ -7,6 +7,7 @@ const { Logger } = require('PRUtils/logger')
 const { setupEndpoints } = require('PREndpoints')
 const { setupCors } = require('PRUtils/setupCors')
 const { errorListener } = require('PRUtils/errorListener')
+const { setupBlacklist } = require('PRMiddleware/setupBlacklist')
 
 /**
  * Initializes the Tap-Proxy Server and starts listening on the port defined in the config
@@ -19,6 +20,7 @@ const initProxy = async () => {
 
   setupCors()
   setupRouter()
+  setupBlacklist()
   errorListener()
   setupEndpoints()
 
@@ -37,6 +39,7 @@ const initProxy = async () => {
   return server
 
 }
+
 
 module.exports = {
   initProxy

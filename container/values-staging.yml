@@ -1,3 +1,2 @@
 env:
-  KEG_PROXY_HOST: staging.keghub.io
   KEG_AUTO_SYNC: false
