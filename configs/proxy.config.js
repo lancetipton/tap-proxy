@@ -2,7 +2,7 @@ const {
   KEG_PROXY_UPDATE=10000,
   KEG_PROXY_HOST=`localhost`,
   KEG_PROXY_SERVER_PORT=80,
-  KEG_PROXY_ALLOWED_ORIGINS=`localhost,local.keghub.io`,
+  KEG_PROXY_ALLOWED_ORIGINS,
 } = process.env
 
 const config = {

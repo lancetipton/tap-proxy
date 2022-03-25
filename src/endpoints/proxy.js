@@ -99,6 +99,8 @@ const addAllowOriginHeader = (proxyRes, origin) => {
 module.exports = () => {
   const app = getApp()
 
+  Logger.info(`Allowed Origins: ${config.origins.join(', ')}`)
+
   app.use(`**`, createProxyMiddleware({
     ws: true,
     logLevel: 'error',
@@ -107,7 +109,7 @@ module.exports = () => {
     router: proxyRouter,
     onError: onProxyError,
     onProxyRes: (proxyRes, req, res) => {
-      const origin = req.get('origin').trim()
+      const origin = (req.get('origin') || '').trim()
       if(origin){
         config.origins.includes('*')
           ? addAllowOriginHeader(proxyRes, origin)

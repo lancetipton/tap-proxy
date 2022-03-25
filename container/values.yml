@@ -50,6 +50,8 @@ env:
 
   # Ensures watchtower won't restart the container when a new image is found (default is true)
   KEG_WATCHTOWER_ENABLED: false
+  
+  KEG_PROXY_ALLOWED_ORIGINS: localhost,herkin-develop.local.keghub.io,herkin-dev.web.app,https://herkin-dev.web.app
 
   # --- PROXY ENV CONTEXT --- #
 

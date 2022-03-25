@@ -21,6 +21,7 @@ services:
       - KEG_PROXY_HOST
       - KEG_PROXY_SERVER_PORT
       - KEG_PROXY_UPDATE
+      - KEG_PROXY_ALLOWED_ORIGINS
       - NODE_ENV
     ports:
       - ${KEG_PROXY_SERVER_PORT}:${KEG_PROXY_SERVER_PORT:-80}
