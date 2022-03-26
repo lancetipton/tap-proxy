@@ -22,6 +22,7 @@ env:
 
   # --- LOCAL ENV CONTEXT --- #
   KEG_CONTEXT_PATH: "{{ cli.taps.tp.path }}"
+  ROOT_PATH: {{ cli.taps.tp.path }}
   SRC_PATH: {{ cli.taps.tp.path }}/src
   CONFIGS_PATH: {{ cli.taps.tp.path }}/configs
 
@@ -33,6 +34,8 @@ env:
 
   # Turn off the auto docker exec command after the container is started
   KEG_AUTO_DOCKER_EXEC: false
+
+  KEG_BASE_IMAGE: node:14.7-alpine
 
   # Turn off auto-building the keg-base image
   KEG_FROM_BASE: false
@@ -51,7 +54,7 @@ env:
   # Ensures watchtower won't restart the container when a new image is found (default is true)
   KEG_WATCHTOWER_ENABLED: false
   
-  KEG_PROXY_ALLOWED_ORIGINS: localhost,herkin-develop.local.keghub.io,herkin-dev.web.app,https://herkin-dev.web.app
+  # KEG_PROXY_ALLOWED_ORIGINS: localhost,herkin-develop.local.keghub.io
 
   # --- PROXY ENV CONTEXT --- #
 
@@ -62,6 +65,7 @@ env:
 
   # Default location of the tap in the docker container
   DOC_APP_PATH: /keg/tap
+  DOR_ROOT_PATH: /keg/tap
   DOC_SRC_PATH: /keg/tap/src
   DOC_CONFIGS_PATH: /keg/tap/configs
 

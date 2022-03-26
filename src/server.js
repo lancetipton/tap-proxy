@@ -1,12 +1,9 @@
-const url = require('url')
-const http = require('http')
 const { getApp } = require('PRApp')
-const { config } = require('PRConfig')
 const { setupRouter } = require('PRRouter')
-const { Logger } = require('PRUtils/logger')
 const { setupEndpoints } = require('PREndpoints')
 const { setupCors } = require('PRUtils/setupCors')
 const { errorListener } = require('PRUtils/errorListener')
+const { setupServer } = require('PRMiddleware/setupServer')
 const { setupBlacklist } = require('PRMiddleware/setupBlacklist')
 
 /**
@@ -16,28 +13,14 @@ const { setupBlacklist } = require('PRMiddleware/setupBlacklist')
  * @returns {Object} - Express server object
  */
 const initProxy = async () => {
-  const app = getApp()
-
+  getApp()
   setupCors()
   setupRouter()
   setupBlacklist()
   errorListener()
   setupEndpoints()
 
-  const { port=80, host=`localhost` } = app.locals.config
-  const server = app.listen(port, () => {
-    Logger.empty()
-    Logger.pair(`[Tap-Proxy] Server running on: `, `http://${host}:${port}`)
-    Logger.empty()
-  })
-
-  process.on('SIGTERM', () => {
-    Logger.info('[Tap-Proxy] Shutting down server...')
-    server.close(() => Logger.info('[Tap-Proxy] server shutdown'))
-  })
-
-  return server
-
+  return setupServer()
 }
 
 

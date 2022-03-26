@@ -92,3 +92,4 @@ serviceAccountKey.json
 
 /notes/**
 /docker_proxy
+/temp/blacklist.txt

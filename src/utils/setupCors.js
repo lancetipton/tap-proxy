@@ -1,6 +1,14 @@
 const { getApp } = require('PRApp')
 const { config } = require('PRConfig')
 const { eitherArr } = require('@keg-hub/jsutils')
+const { validateOrigin } = require('./validateOrigin')
+
+
+const onInvalidOrigin = (req, res, origin) => {
+  console.error(`[Tap-Proxy] Invalid Orgin Attempt - ${origin}`)
+
+  return res.status(401).send('NOT AUTHORIZED')
+}
 
 /**
  * Configures cors for the backend API and websocket
@@ -13,18 +21,25 @@ const { eitherArr } = require('@keg-hub/jsutils')
 const setupCors = () => {
   const app = getApp()
 
-  const allowedOrigins = !config.origins
-    ? ['*']
-    : eitherArr(config.origins, [config.origins])
-
   app.use((req, res, next) => {
-    const origin = req.headers.origin
-    const foundOrigin = (allowedOrigins.includes(origin)) ? origin : allowedOrigins[0]
+    
+    const foundOrigin = validateOrigin(req, config.origins)
+    if(!foundOrigin) return onInvalidOrigin(req, res, origin)
 
-    res.header("Access-Control-Allow-Origin", foundOrigin)
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    res.setHeader('Access-Control-Allow-Origin', foundOrigin)
+    res.setHeader('Vary', 'Origin,Access-Control-Request-Headers')
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS'
+    )
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'X-PINGOTHER,Origin,X-Requested-With,Content-Type,Accept,Authorization,AuthToken'
+    )
 
-    next()
+    return req.method === 'OPTIONS' ? res.status(200).send('OK') : next()
+
   })
 
 }
@@ -32,3 +47,5 @@ const setupCors = () => {
 module.exports = {
   setupCors
 }
+
+

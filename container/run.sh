@@ -3,7 +3,6 @@
 # Ensure required envs are set
 [[ -z "$DOC_APP_PATH" ]] && DOC_APP_PATH=/keg/tap
 
-
 # Serve the app bundle in development environemnts
 cd $DOC_APP_PATH
 [[ -z "$KEG_EXEC_CMD" ]] && KEG_EXEC_CMD=proxy

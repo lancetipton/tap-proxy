@@ -4,6 +4,7 @@ const { get } = require('@keg-hub/jsutils')
 const { dashboard } = require('./dashboard')
 const { RouteTable } = require('PRRouteTable')
 const { Logger } = require('@keg-hub/cli-utils')
+const { validateOrigin } = require('PRUtils/validateOrigin')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 
 const { host:proxyHost } = config
@@ -18,8 +19,9 @@ const { host:proxyHost } = config
  * @returns {void}
  */
 const respond404 = (res, message='Route not found in RouteTable') => {
-  res.status(404).send(message)
+  res && res.status && res.status(404).send(message)
 }
+
 
 /**
  * Resolves the hostname from the req
@@ -56,7 +58,7 @@ const resolveHostName = req => {
  */
 const onProxyError = (err, req, res, target) => {
   return proxyHost === req.hostname
-    ? dashboard(req, res, next)
+    ? dashboard(req, res)
     : respond404(res, err.message)
 }
 
@@ -76,16 +78,35 @@ const proxyRouter = req => {
   const destination = resolveHostName(req)
   if(!destination) return null
   
-  const route = RouteTable.getRoute(destination)
+  // TODO: setup a default route when none is defined
+  // Then set herkin as the default
+  const route = RouteTable.getRoute(destination) || RouteTable.routes[config.container.defaultRoute]
+
   if(!route) return null
 
-  return { port: route.port, host: route.address }
+
+  const conf = {
+    protocol: route.port === 443 ? `https:` : `http:`,
+    port: route.port,
+    host: route.address
+  }
+  
+  return conf
 } 
 
 const addAllowOriginHeader = (proxyRes, origin) => {
   proxyRes.headers['Access-Control-Allow-Origin'] = origin
 }
 
+const mapRequestHeaders = (proxyReq, req) => {
+  Object.keys(req.headers)
+    .forEach(key => proxyReq.setHeader(key, req.headers[key]))
+}
+
+const mapResponseHeaders = (proxyRes, res) => {
+  Object.keys(proxyRes.headers)
+    .forEach(key => res.append(key, proxyRes.headers[key]))
+}
 /**
  * Sets up a catch all for all requests not picked up by other endpoints
  * Currently because of `app.use`, all request are picked up by the proxy no matter what
@@ -108,15 +129,16 @@ module.exports = () => {
     ...config.proxy,
     router: proxyRouter,
     onError: onProxyError,
+    changeOrigin: true,
+    onProxyReq: (proxyRes, req, res) => {
+      mapRequestHeaders(proxyRes, req)
+    },
     onProxyRes: (proxyRes, req, res) => {
-      const origin = (req.get('origin') || '').trim()
-      if(origin){
-        config.origins.includes('*')
-          ? addAllowOriginHeader(proxyRes, origin)
-          :  config.origins.includes(origin)
-              ? addAllowOriginHeader(proxyRes, origin)
-              : Logger.error(`Origin ${origin} does not match allowed origins ${config.origins.join(', ')}`)
-      }
+      mapResponseHeaders(proxyRes, res)
+      const origin = validateOrigin(req, config.origins)
+      origin
+        ? addAllowOriginHeader(proxyRes, origin)
+        : Logger.error(`Origin ${origin} does not match allowed origins ${config.origins.join(', ')}`)
     },
   }))
 
