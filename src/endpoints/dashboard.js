@@ -22,10 +22,10 @@ const proxyDashboard = (req, res) => {
  * @function
  * @public
  */
-module.exports = () => {
-  AppRouter.get('/tap-proxy', proxyDashboard)
+module.exports = (middleware) => {
+  AppRouter.get('/tap-proxy', ...middleware, proxyDashboard)
 }
 
 // Export the dashboard handler after setting the main exports function
-// Because we need to import it other files
+// Because we need to import it in other files
 module.exports.dashboard = proxyDashboard

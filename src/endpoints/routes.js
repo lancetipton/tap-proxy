@@ -35,7 +35,7 @@ const proxyReset = (req, res) => {
  * @function
  * @public
  */
-module.exports = () => {
-  AppRouter.get('/tap-proxy/routes', proxyRoutes)
-  AppRouter.get('/tap-proxy/reset', proxyReset)
+module.exports = (middleware) => {
+  AppRouter.get('/tap-proxy/routes', ...middleware, proxyRoutes)
+  AppRouter.get('/tap-proxy/reset', ...middleware, proxyReset)
 }

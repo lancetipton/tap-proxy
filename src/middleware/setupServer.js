@@ -29,8 +29,12 @@ const insecure = (app) => {
  * @retruns {Object} - Insecure / Secure server object and Express app object
  */
 const secure = (app) => {
-  const { port=80, creds, host=`localhost` } = app.locals.config
-  
+  const { port=80, host=`localhost` } = app.locals.config
+  const creds = {
+    key: process.env.KEG_PROXY_PRIVATE_KEY,
+    cert: process.env.KEG_PROXY_CERT,
+    ca: process.env.KEG_PROXY_CA,
+  }
   const credentials = Object.entries(creds).reduce((conf, [key, loc]) => {
     conf[key] = fs.readFileSync(loc, 'utf8')
 

@@ -18,6 +18,6 @@ const health = (req, res) => {
  * @function
  * @public
  */
-module.exports = () => {
-  AppRouter.get('/tap-proxy/health', health)
+module.exports = (middleware) => {
+  AppRouter.get('/tap-proxy/health', ...middleware, health)
 }

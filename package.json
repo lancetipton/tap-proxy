@@ -21,28 +21,30 @@
     "task": "node ./tasks/runTask.js"
   },
   "dependencies": {
-    "@keg-hub/ask-it": "^1.1.0",
+    "@keg-hub/ask-it": "1.1.0",
     "@keg-hub/cli-utils": "0.2.2",
     "@keg-hub/jsutils": "8.6.0",
     "@keg-hub/parse-config": "2.0.0",
     "app-root-path": "3.0.0",
     "axios": "0.21.1",
-    "body-parser": "1.10.2",
+    "cors": "2.8.5",
     "dockerode": "2.2.10",
     "dotenv": "8.2.0",
     "express": "4.17.1",
-    "express-blacklist": "^1.0.3",
-    "express-defend": "^1.0.9",
+    "express-blacklist": "1.0.3",
+    "express-defend": "1.0.9",
+    "express-winston": "4.2.0",
     "http-proxy-middleware": "2.0.1",
     "module-alias": "2.2.2",
     "nodemon": "2.0.4",
     "npm-run-all": "4.1.5",
-    "open": "8.0.6"
+    "open": "8.0.6",
+    "winston": "3.6.0"
   },
   "devDependencies": {
     "jest": "26.4.2",
     "jest-html-reporter": "3.3.0",
-    "prettier": "^2.2.1",
+    "prettier": "2.2.1",
     "rimraf": "3.0.2"
   }
 }

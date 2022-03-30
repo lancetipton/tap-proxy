@@ -103,10 +103,18 @@ const mapRequestHeaders = (proxyReq, req) => {
     .forEach(key => proxyReq.setHeader(key, req.headers[key]))
 }
 
+/**
+ * Maps the response headers from the response to the proxied response
+ * @param {Object} proxyRes - Respose object used by the proxy
+ * @param {Object} res - Original response object
+ *
+ * @returns {void}
+ */
 const mapResponseHeaders = (proxyRes, res) => {
   Object.keys(proxyRes.headers)
     .forEach(key => res.append(key, proxyRes.headers[key]))
 }
+
 /**
  * Sets up a catch all for all requests not picked up by other endpoints
  * Currently because of `app.use`, all request are picked up by the proxy no matter what
@@ -124,24 +132,29 @@ module.exports = () => {
 
   app.use(`**`, createProxyMiddleware({
     ws: true,
+    xfwd: true,
     logLevel: 'error',
     target: proxyHost,
+    changeOrigin: true,
     ...config.proxy,
     router: proxyRouter,
     onError: onProxyError,
-    changeOrigin: true,
-    onProxyReq: (proxyRes, req, res) => {
-      mapRequestHeaders(proxyRes, req)
+    onProxyReq: (proxyReq, req, res) => {
+      const {valid} = validateOrigin(req, config.origins)
+      if(!valid){
+        Logger.error(`Origin ${origin} does not match allowed origins ${config.origins.join(', ')}`)
+        res.status(401).send('NOT AUTHORIZED')
+        return
+      }
+      mapRequestHeaders(proxyReq, req)
     },
     onProxyRes: (proxyRes, req, res) => {
       mapResponseHeaders(proxyRes, res)
-      const origin = validateOrigin(req, config.origins)
-      origin
+      const {origin, valid} = validateOrigin(req, config.origins)
+      valid
         ? addAllowOriginHeader(proxyRes, origin)
         : Logger.error(`Origin ${origin} does not match allowed origins ${config.origins.join(', ')}`)
     },
   }))
-
-
 
 }

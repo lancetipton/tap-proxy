@@ -1,7 +1,7 @@
 const { getApp } = require('PRApp')
 const { setupRouter } = require('PRRouter')
 const { setupEndpoints } = require('PREndpoints')
-const { setupCors } = require('PRUtils/setupCors')
+const { setupCors } = require('PRMiddleware/setupCors')
 const { errorListener } = require('PRUtils/errorListener')
 const { setupServer } = require('PRMiddleware/setupServer')
 const { setupBlacklist } = require('PRMiddleware/setupBlacklist')

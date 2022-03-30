@@ -2,6 +2,9 @@ const proxy = require('./proxy')
 const health = require('./health')
 const routes = require('./routes')
 const dashboard = require('./dashboard')
+const express = require('express')
+
+const middleware = [express.json(), express.urlencoded({ extended: true })]
 
 /**
  * Sets up all endpoints for the tap-proxy
@@ -11,9 +14,9 @@ const dashboard = require('./dashboard')
  *
  */
 const setupEndpoints = (...args) => {
-  routes(...args)
-  health(...args)
-  dashboard(...args)
+  routes(middleware, ...args)
+  health(middleware, ...args)
+  dashboard(middleware, ...args)
   proxy(...args)
 }
 

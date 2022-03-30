@@ -1,7 +1,6 @@
 const express = require('express')
 const { getApp } = require('PRApp')
-const bodyParser = require('body-parser')
-const { Logger, logRequest } = require('PRUtils/logger')
+const { logRequest } = require('PRUtils/logger')
 
 /**
  * AppRouter - Express router
@@ -19,12 +18,13 @@ const AppRouter = express.Router()
 const setupRouter = () => {
   const app = getApp()
 
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.disable('x-powered-by')
+
   app.use((req, res, next) => {
     logRequest(req)
     next()
   })
+
   app.use(AppRouter)
 }
 
